@@ -7,7 +7,6 @@ import { useLanguageStore } from '../../../store/languageStore'; // Importing th
 const cardStyles = {
   root: {
     position: 'relative',
-    width: '200px', // Adjust size as needed
     height: '300px', // Adjust height as needed
     cursor: 'pointer',
     display: 'flex',

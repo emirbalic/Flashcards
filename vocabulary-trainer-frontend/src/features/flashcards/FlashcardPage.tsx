@@ -13,7 +13,7 @@ const FlashcardPage: React.FC = () => {
 
   return (
     <Box
-    paddingTop={10}
+    paddingTop={11}
       display="flex"
       flexWrap="wrap"  // Allow cards to wrap on smaller screens
       justifyContent="center"  // Center the cards horizontally
