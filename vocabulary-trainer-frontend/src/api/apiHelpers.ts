@@ -1,11 +1,13 @@
 // src/api/apiHelpers.ts
 import axiosInstance from "./axiosInstance";
 import { AxiosError } from "axios";
+import {FlashcardQueryParams} from "../types/FlashcardQueryParams.ts";
+import { Flashcard } from '../types/Flashcard';  // adjust path as needed
 
 // Define a generic function for API calls with proper typing for `data`
 export const getData = async <T>(url: string): Promise<T> => {
   try {
-    const response = await axiosInstance.get(url);
+    const response = await axiosInstance.get<T>(url);
     // console.log('res => ', response.data);
 
     return response.data;
@@ -17,6 +19,31 @@ export const getData = async <T>(url: string): Promise<T> => {
     throw error; // Handle non-Axios errors
   }
 };
+
+
+
+
+export const getFilteredFlashcards = async (
+    params: FlashcardQueryParams
+): Promise<{ items: Flashcard[]; totalCount: number }> => {
+  const query = new URLSearchParams();
+
+  if (params.search) query.append("search", params.search);
+  if (params.sortBy) query.append("sortBy", params.sortBy);
+  if (params.sortDesc !== undefined) query.append("sortDesc", String(params.sortDesc));
+  query.append("page", String(params.page));
+  query.append("pageSize", String(params.pageSize));
+
+  // const url = `/flashcards/filtered?${query.toString()}`;
+
+  const url = `/flashcards?${query.toString()}`;
+
+  // const data = await getData<Flashcard[]>(url); // make sure getData is typed too
+  const data = await getData<{ items: Flashcard[]; totalCount: number }>(url);
+  return data;
+};
+
+
 
 // export const postData = async <T, U>(url: string, data: U): Promise<T> => {
 //   try {
@@ -114,3 +141,18 @@ export const uploadBulkFlashcards = async (file: File) => {
     throw error; // Handle non-Axios errors
   }
 };
+
+
+// // Add at the bottom of apiHelpers.ts
+// export const getFilteredFlashcards = async (params: FlashcardQueryParams) => {
+//   const query = new URLSearchParams();
+//
+//   if (params.search) query.append("search", params.search);
+//   if (params.sortBy) query.append("sortBy", params.sortBy);
+//   if (params.sortDesc !== undefined) query.append("sortDesc", String(params.sortDesc));
+//   query.append("page", String(params.page));
+//   query.append("pageSize", String(params.pageSize));
+//
+//   const url = `/flashcards/filtered?${query.toString()}`;
+//   return await getData(url);
+// };

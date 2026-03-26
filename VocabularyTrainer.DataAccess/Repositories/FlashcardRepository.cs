@@ -1,9 +1,12 @@
 // VocabularyTrainer.DataAccess/Repositories/FlashcardRepository.cs
+
 using VocabularyTrainer.Data.Data;
 using VocabularyTrainer.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VocabularyTrainer.Contracts.Flashcards;
+using System.Linq.Expressions;
 
 namespace VocabularyTrainer.DataAccess.Repositories
 {
@@ -20,6 +23,54 @@ namespace VocabularyTrainer.DataAccess.Repositories
         {
             return await _context.Flashcards.ToListAsync();
         }
+
+        // public async Task<List<Flashcard>> GetFilteredFlashcardsAsync(FlashcardQueryParams query)
+        public async Task<PagedResult<Flashcard>> GetFilteredFlashcardsAsync(FlashcardQueryParams query)
+        {
+            var flashcardsQuery = _context.Flashcards.AsQueryable();
+
+            // Searching
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                flashcardsQuery = flashcardsQuery
+                    .Where(f => f.German.Contains(query.Search) || f.English.Contains(query.Search));
+            }
+
+            // // Filtering (example: by category)
+            // if (!string.IsNullOrWhiteSpace(query.Category))
+            // {
+            //     flashcardsQuery = flashcardsQuery.Where(f => f.Category == query.Category);
+            // }
+
+            // Sorting
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                flashcardsQuery = query.SortDesc
+                    ? flashcardsQuery.OrderByDescendingDynamic(query.SortBy)
+                    : flashcardsQuery.OrderByDynamic(query.SortBy);
+            }
+            
+            var totalCount = await flashcardsQuery.CountAsync();
+
+            // Pagination
+            int skip = (query.Page - 1) * query.PageSize;
+            var items = await flashcardsQuery
+                .Skip(skip)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            // Return structured result
+            return new PagedResult<Flashcard>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
+            // int skip = (query.Page - 1) * query.PageSize;
+            // flashcardsQuery = flashcardsQuery.Skip(skip).Take(query.PageSize);
+            //
+            // return await flashcardsQuery.ToListAsync();
+        }
+
 
         public async Task<Flashcard> GetByIdAsync(int id)
         {
@@ -53,6 +104,33 @@ namespace VocabularyTrainer.DataAccess.Repositories
                 _context.Flashcards.Remove(flashcard);
                 await _context.SaveChangesAsync();
             }
+        }
+    }
+
+    public static class IQueryableExtensions
+    {
+        public static IQueryable<T> OrderByDynamic<T>(this IQueryable<T> source, string propertyName)
+        {
+            var param = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(param, propertyName);
+            var lambda = Expression.Lambda(property, param);
+            var method = typeof(Queryable).GetMethods()
+                .Where(m => m.Name == "OrderBy" && m.GetParameters().Length == 2)
+                .Single()
+                .MakeGenericMethod(typeof(T), property.Type);
+            return (IQueryable<T>)method.Invoke(null, new object[] { source, lambda })!;
+        }
+
+        public static IQueryable<T> OrderByDescendingDynamic<T>(this IQueryable<T> source, string propertyName)
+        {
+            var param = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(param, propertyName);
+            var lambda = Expression.Lambda(property, param);
+            var method = typeof(Queryable).GetMethods()
+                .Where(m => m.Name == "OrderByDescending" && m.GetParameters().Length == 2)
+                .Single()
+                .MakeGenericMethod(typeof(T), property.Type);
+            return (IQueryable<T>)method.Invoke(null, new object[] { source, lambda })!;
         }
     }
 }

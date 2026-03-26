@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VocabularyTrainer.Service.Services;
 using VocabularyTrainer.Data.Models;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using VocabularyTrainer.Contracts.Flashcards;
 
 namespace VocabularyTrainer.Api.Controllers
 {
@@ -19,12 +18,27 @@ namespace VocabularyTrainer.Api.Controllers
             _flashcardService = flashcardService;
             _logger = logger;
         }
+        // // [HttpGet]
+        // // public async Task<ActionResult<List<Flashcard>>> GetFlashcards()
+        // // {
+        // //     var flashcards = await _flashcardService.GetAllFlashcardsAsync();
+        // //     return Ok(flashcards);
+        // // }
+        //
+        // [HttpGet]
+        // public async Task<ActionResult<List<Flashcard>>> GetFlashcards([FromQuery] FlashcardQueryParams queryParams)
+        // {
+        //     var flashcards = await _flashcardService.GetFlashcardsAsync(queryParams);
+        //     return Ok(flashcards);
+        // }
+        
         [HttpGet]
-        public async Task<ActionResult<List<Flashcard>>> GetFlashcards()
+        public async Task<ActionResult<PagedResult<Flashcard>>> GetFlashcards([FromQuery] FlashcardQueryParams queryParams)
         {
-            var flashcards = await _flashcardService.GetAllFlashcardsAsync();
-            return Ok(flashcards);
+            var result = await _flashcardService.GetFlashcardsAsync(queryParams);
+            return Ok(result);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Flashcard>> GetFlashcard(int id)

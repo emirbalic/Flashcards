@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\VocabularyTrainer.Contracts\VocabularyTrainer.Contracts.csproj" />
     <ProjectReference Include="..\VocabularyTrainer.Data\VocabularyTrainer.Data.csproj" />
   </ItemGroup>
 

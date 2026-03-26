@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VocabularyTrainer.DataAcces
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VocabularyTrainer.Service", "VocabularyTrainer.Service\VocabularyTrainer.Service.csproj", "{CE527EE1-C229-40BB-832D-7377800B6915}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VocabularyTrainer.Contracts", "VocabularyTrainer.Contracts\VocabularyTrainer.Contracts.csproj", "{EB74817E-923D-4BB0-AD9A-AEB000790EBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{CE527EE1-C229-40BB-832D-7377800B6915}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE527EE1-C229-40BB-832D-7377800B6915}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE527EE1-C229-40BB-832D-7377800B6915}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB74817E-923D-4BB0-AD9A-AEB000790EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB74817E-923D-4BB0-AD9A-AEB000790EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB74817E-923D-4BB0-AD9A-AEB000790EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB74817E-923D-4BB0-AD9A-AEB000790EBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

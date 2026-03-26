@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VocabularyTrainer.Contracts\VocabularyTrainer.Contracts.csproj" />
     <ProjectReference Include="..\VocabularyTrainer.Data\VocabularyTrainer.Data.csproj" />
     <ProjectReference Include="..\VocabularyTrainer.DataAccess\VocabularyTrainer.DataAccess.csproj" />
     <ProjectReference Include="..\VocabularyTrainer.Service\VocabularyTrainer.Service.csproj" />

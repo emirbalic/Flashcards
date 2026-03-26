@@ -1,35 +1,71 @@
 // src/features/flashcards/FlashcardPage.tsx
-import React from 'react';
-import {  CircularProgress, Alert, Box } from '@mui/material';
+import React, {useState} from 'react';
+import {Alert, Box, CircularProgress, TextField, Pagination} from '@mui/material';
 import Flashcard from './components/Flashcard.tsx';
 import useFlashcards from './hooks/useFlashcards.ts';
 
 const FlashcardPage: React.FC = () => {
-  const { flashcards, loading, error } = useFlashcards();
-  
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Alert severity="error">{error}</Alert>;
+    const {flashcards, loading, error} = useFlashcards({
+        search,
+        page,
+    });
 
-  return (
-    <Box
-    paddingTop={11}
-      display="flex"
-      flexWrap="wrap"  // Allow cards to wrap on smaller screens
-      justifyContent="center"  // Center the cards horizontally
-      gap={3}  // Space between cards (3 * 8px = 24px)
-    >
-      {flashcards.map((flashcard) => (
+    if (error) return <Alert severity="error">{error}</Alert>;
+
+    return (
         <Box
-          key={flashcard.id}
-          width={{ xs: '100%', sm: '48%', md: '30%', lg: '22%' }}  // Responsive sizing (full width on small screens, 48% on sm, etc.)
-          mb={3}  // Margin at the bottom of each card
+            paddingTop={11}
+            px={2}
+            sx={{minHeight: "100vh"}}
         >
-          <Flashcard flashcard={flashcard} />
+
+            {/*{loading && <CircularProgress size={24}/>}*/}
+            <Box sx={{height: 32}}>
+                {loading && <CircularProgress size={24}/>}
+            </Box>
+
+            <TextField
+                label="Search flashcards"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={search}
+                // onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                }}
+            />
+
+            <Box
+                display="flex"
+                flexWrap="wrap"
+                justifyContent="flex-start"
+                gap={3}
+            >
+                {flashcards.map((flashcard) => (
+                    <Box
+                        key={flashcard.id}
+                        sx={{
+                            flex: '1 0 300px',
+                            maxWidth: '300px',
+                        }}
+                        mb={3}
+                    >
+                        <Flashcard flashcard={flashcard}/>
+                    </Box>
+                ))}
+            </Box>
+            <Pagination
+                count={10} // temporary
+                page={page}
+                onChange={(_, value) => setPage(value)}
+            />
         </Box>
-      ))}
-    </Box>
-  );
+    );
 };
 
 export default FlashcardPage;

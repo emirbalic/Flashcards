@@ -10,7 +10,7 @@ using CsvHelper.Configuration;
 using System.Globalization;
 
 using Microsoft.AspNetCore.Http;
-
+using VocabularyTrainer.Contracts.Flashcards;
 
 
 namespace VocabularyTrainer.Service.Services
@@ -24,10 +24,19 @@ namespace VocabularyTrainer.Service.Services
             _flashcardRepository = flashcardRepository;
         }
 
-        public async Task<List<Flashcard>> GetAllFlashcardsAsync()
+        // // public async Task<List<Flashcard>> GetAllFlashcardsAsync()
+        // // {
+        // //     return await _flashcardRepository.GetAllAsync();
+        // // }
+        // public async Task<List<Flashcard>> GetFlashcardsAsync(FlashcardQueryParams queryParams)
+        // {
+        //     return await _flashcardRepository.GetFilteredFlashcardsAsync(queryParams);
+        // }
+        public async Task<PagedResult<Flashcard>> GetFlashcardsAsync(FlashcardQueryParams queryParams)
         {
-            return await _flashcardRepository.GetAllAsync();
+            return await _flashcardRepository.GetFilteredFlashcardsAsync(queryParams);
         }
+
 
         public async Task<Flashcard> GetFlashcardByIdAsync(int id)
         {

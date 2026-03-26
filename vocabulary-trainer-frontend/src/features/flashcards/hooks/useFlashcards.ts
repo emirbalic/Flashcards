@@ -1,24 +1,27 @@
-import { useQuery } from '@tanstack/react-query';  // Import useQuery
-import { getData } from '../../../api/apiHelpers';  // Assuming getData is already implemented
+import { useQuery } from '@tanstack/react-query';
+import { getFilteredFlashcards } from '../../../api/apiHelpers';
 import { Flashcard } from '../../../types/Flashcard';
+import { FlashcardQueryParams } from '../../../types/FlashcardQueryParams'
 
-// This function fetches flashcards from the API
-const fetchFlashcards = async (): Promise<Flashcard[]> => {
-  return await getData<Flashcard[]>('/flashcards');
-};
+const useFlashcards = (params?: FlashcardQueryParams) => {
+  const mergedParams: FlashcardQueryParams = {
+    page: 1,
+    pageSize: 12,
+    sortDesc: false,
+    ...params, // override defaults
+  };
 
-// Custom hook for fetching flashcards with useQuery
-const useFlashcards = () => {
-  // useQuery is now used to fetch the data and manage loading/error states
-  const { data, isLoading, error } = useQuery<Flashcard[], Error>({
-    queryKey: ['flashcards'], // The query key used to uniquely identify the data
-    queryFn: fetchFlashcards, // The function to fetch the data
+  const { data, isLoading, error } = useQuery<{ items: Flashcard[]; totalCount: number }, Error>({
+    queryKey: ['flashcards', mergedParams],
+    queryFn: () => getFilteredFlashcards(mergedParams),
+    placeholderData: (previousData) => previousData, // 🔥 replacement
   });
 
   return {
-    flashcards: data || [], // If no data, return an empty array
-    loading: isLoading, // Loading state
-    error: error instanceof Error ? error.message : null, // Error message if there's an error
+    flashcards: data?.items || [],
+    totalCount: data?.totalCount || 0,
+    loading: isLoading,
+    error: error instanceof Error ? error.message : null,
   };
 };
 
