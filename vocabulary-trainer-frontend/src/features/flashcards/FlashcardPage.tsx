@@ -8,6 +8,7 @@ const FlashcardPage: React.FC = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
 
+
     const {flashcards, totalCount, loading, error} = useFlashcards({
         search,
         page,
