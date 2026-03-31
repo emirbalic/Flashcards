@@ -1,17 +1,20 @@
 // src/features/flashcards/FlashcardPage.tsx
 import React, {useState} from 'react';
-import {Alert, Box, CircularProgress, TextField, Pagination} from '@mui/material';
+import {Alert, Box, CircularProgress, TextField, Pagination, Select, MenuItem, Button} from '@mui/material';
 import Flashcard from './components/Flashcard.tsx';
 import useFlashcards from './hooks/useFlashcards.ts';
 
 const FlashcardPage: React.FC = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
-
+    const [sortBy, setSortBy] = useState<string | undefined>();
+    const [sortDesc, setSortDesc] = useState(false);
 
     const {flashcards, totalCount, loading, error} = useFlashcards({
         search,
         page,
+        sortBy,
+        sortDesc,
     });
 
     if (error) return <Alert severity="error">{error}</Alert>;
@@ -51,6 +54,26 @@ const FlashcardPage: React.FC = () => {
                 <Box sx={{ height: 36, display: "flex", alignItems: "center" }}>
                     {loading && <CircularProgress size={20} />}
                 </Box>
+                <Select
+                    value={sortBy || ""}
+                    onChange={(e) => {
+                        const value = e.target.value || undefined;
+                        setSortBy(value);
+                        setPage(1);
+                    }}
+                    size="small"
+                    sx={{ minWidth: 160 }}
+                >
+                    <MenuItem value="">Default</MenuItem>
+                    <MenuItem value="german">German</MenuItem>
+                    <MenuItem value="english">English</MenuItem>
+                </Select>
+                <Button
+                    onClick={() => setSortDesc((prev) => !prev)}
+                    size="small"
+                >
+                    {sortDesc ? "↓ Desc" : "↑ Asc"}
+                </Button>
             </Box>
 
             {/* Grid */}
