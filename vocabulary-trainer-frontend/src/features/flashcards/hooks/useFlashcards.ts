@@ -6,7 +6,7 @@ import { FlashcardQueryParams } from '../../../types/FlashcardQueryParams'
 const useFlashcards = (params?: FlashcardQueryParams) => {
   const mergedParams: FlashcardQueryParams = {
     page: 1,
-    pageSize: 12,
+    pageSize: 10,
     sortDesc: false,
     ...params, // override defaults
   };

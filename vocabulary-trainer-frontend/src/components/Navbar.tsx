@@ -105,7 +105,7 @@ const Navbar = () => {
 
   return (
       <>
-          <AppBar position="fixed" sx={{top: 0, left: 0, width: "100%"}}>
+          <AppBar position="fixed">
               <Toolbar>
                   <Typography variant="h6" sx={{flexGrow: 1}}>
                       Flashcards App
@@ -155,6 +155,7 @@ const Navbar = () => {
                   )}
               </Toolbar>
           </AppBar>
+          <Toolbar />
 
           {/* File Upload Modal */}
           <FileUploadModal open={openFileUploadModal} handleClose={handleFileUploadModalClose}/>

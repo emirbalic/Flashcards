@@ -8,7 +8,7 @@ const FlashcardPage: React.FC = () => {
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
 
-    const {flashcards, loading, error} = useFlashcards({
+    const {flashcards, totalCount, loading, error} = useFlashcards({
         search,
         page,
     });
@@ -17,53 +17,75 @@ const FlashcardPage: React.FC = () => {
 
     return (
         <Box
-            paddingTop={11}
             px={2}
-            sx={{minHeight: "100vh"}}
+            py={3}
+            sx={{
+                minHeight: "100vh",
+                maxWidth: "1200px",
+                margin: "0 auto",
+                width: "100%",
+            }}
         >
-
-            {/*{loading && <CircularProgress size={24}/>}*/}
-            <Box sx={{height: 32}}>
-                {loading && <CircularProgress size={24}/>}
-            </Box>
-
-            <TextField
-                label="Search flashcards"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={search}
-                // onChange={(e) => setSearch(e.target.value)}
-                onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                }}
-            />
-
+            {/* Top bar */}
             <Box
                 display="flex"
-                flexWrap="wrap"
-                justifyContent="flex-start"
-                gap={3}
+                flexDirection={{ xs: "column", sm: "row" }}
+                gap={2}
+                alignItems={{ sm: "center" }}
+                justifyContent="space-between"
+                mb={3}
+            >
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    fullWidth
+                    value={search}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                    }}
+                />
+
+                {/* Loader stays stable */}
+                <Box sx={{ height: 36, display: "flex", alignItems: "center" }}>
+                    {loading && <CircularProgress size={20} />}
+                </Box>
+            </Box>
+
+            {/* Grid */}
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)",
+                        md: "repeat(3, 1fr)",
+                        lg: "repeat(4, 1fr)",
+                    },
+                    gap: 3,
+                }}
             >
                 {flashcards.map((flashcard) => (
-                    <Box
-                        key={flashcard.id}
-                        sx={{
-                            flex: '1 0 300px',
-                            maxWidth: '300px',
-                        }}
-                        mb={3}
-                    >
-                        <Flashcard flashcard={flashcard}/>
-                    </Box>
+                    <Flashcard key={flashcard.id} flashcard={flashcard} />
                 ))}
             </Box>
-            <Pagination
-                count={10} // temporary
-                page={page}
-                onChange={(_, value) => setPage(value)}
-            />
+
+            {/* Pagination */}
+            <Box
+                display="flex"
+                justifyContent="center"
+                mt={4}
+            >
+                <Pagination
+                    count={Math.ceil(totalCount / 10)}
+                    page={page}
+                    onChange={(_, value) => setPage(value)}
+                    color="primary"
+                    size="large"
+                    shape="rounded"
+                />
+            </Box>
+
         </Box>
     );
 };
